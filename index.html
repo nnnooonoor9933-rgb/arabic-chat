@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الدردشة العربية</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#121f2b;color:#17212b}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}
+.hidden{display:none!important}
+#auth-screen{min-height:100vh;display:grid;place-items:center;padding:18px;background:#121f2b}
+.card{width:min(480px,100%);background:#1b2e3d;color:#fff;border-radius:18px;padding:24px;box-shadow:0 15px 50px #0005}
+.card h1{text-align:center;margin:0 0 8px}.sub{text-align:center;color:#a4b0be;margin:0 0 20px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1;padding:11px;border-radius:10px;background:#0b141a;color:#a4b0be}.tabs button.active{background:#00a884;color:#fff}
+.field{margin:10px 0}.field label{display:block;margin-bottom:6px;color:#c9d2d9}.field input,.field textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #394c59;background:#0f1a22;color:#fff;outline:none}.field textarea{min-height:80px;resize:vertical}
+.primary{width:100%;padding:12px;border-radius:10px;background:#00a884;color:#fff;font-weight:bold}.danger{background:#d64545!important}.muted{color:#a4b0be;font-size:13px}.error{margin-top:10px;padding:10px;border-radius:9px;background:#4b1e25;color:#ffb6bd}
+#app{height:100vh;display:flex;flex-direction:column;background:#eef2f3}
+.topbar{height:60px;flex:none;background:#0b141a;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;gap:8px}.brand{font-weight:bold}.top-actions{display:flex;gap:6px}.icon-btn{background:transparent;color:#a4b0be;font-size:21px;padding:8px;border-radius:8px}.icon-btn:hover{background:#1b2a32}
+.banner{background:#1b2e3d;color:#fff;padding:8px 12px;text-align:center;font-size:13px}.banner b{color:#00e676}
+.main{flex:1;min-height:0;display:flex}
+.sidebar{width:310px;background:#fff;border-left:1px solid #dce3e7;display:flex;flex-direction:column;min-height:0}
+.side-head{padding:12px;border-bottom:1px solid #e3e8eb;display:flex;justify-content:space-between;align-items:center}.online{color:#28a745;font-weight:bold}.members{overflow:auto}.member{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f0f2f3;cursor:pointer}.member:hover{background:#f5f8f9}.avatar{width:45px;height:45px;border-radius:50%;object-fit:cover;background:#dce3e7}.member-name{font-weight:bold}.member-status{font-size:11px;color:#28a745}
+.chat{flex:1;display:flex;flex-direction:column;min-width:0}.chat-head{background:#fff;padding:10px 14px;border-bottom:1px solid #dce3e7;display:flex;justify-content:space-between;align-items:center}.messages{flex:1;overflow:auto;padding:14px;background:#eef2f3}.msg{max-width:min(78%,560px);background:#fff;border-radius:12px;padding:9px 11px;margin:7px 0;box-shadow:0 1px 2px #0001}.msg.mine{margin-right:auto;background:#d9fdd3}.msg .meta{font-size:11px;color:#72808a;margin-bottom:4px}.msg .text{white-space:pre-wrap;word-break:break-word}.composer{background:#fff;padding:9px;display:flex;gap:8px;border-top:1px solid #dce3e7}.composer input{flex:1;border:1px solid #d5dde2;border-radius:20px;padding:11px 14px;outline:none}.send{background:#1b2a32;color:#fff;border-radius:50%;width:44px;height:44px}.gift{background:#e8f8ed;border-right:3px solid #2ecc71}.bot{background:#eaf5ff;border-right:3px solid #2196f3}
+.bottom{display:none;background:#0b141a;color:#fff;padding:7px;gap:5px}.bottom button{flex:1;background:transparent;color:#a4b0be;padding:7px;font-size:12px}
+.modal{position:fixed;inset:0;background:#0008;z-index:9999;display:grid;place-items:center;padding:15px}.modal-card{width:min(480px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:18px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{background:#eee;border-radius:50%;width:34px;height:34px}.profile-cover{height:110px;border-radius:12px;background:linear-gradient(135deg,#1b2e3d,#00a884);margin-bottom:-32px}.profile-main{text-align:center;padding:0 10px 10px}.profile-main .avatar{width:82px;height:82px;border:4px solid #fff}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#eef2f3;font-size:11px;margin:3px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.actions button{padding:10px;border-radius:9px;background:#0b141a;color:#fff}.list-item{padding:10px;border-bottom:1px solid #eee;cursor:pointer}.toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:#00a884;color:#fff;padding:10px 15px;border-radius:20px;z-index:10000;box-shadow:0 5px 20px #0004}
+@media(max-width:760px){.sidebar{display:none}.bottom{display:flex}.main{padding-bottom:0}.chat-head{height:52px}.messages{padding:10px}.msg{max-width:88%}}
+</style>
+</head>
+<body>
+<section id="auth-screen">
+  <div class="card">
+    <h1>الدردشة العربية</h1>
+    <p class="sub">تسجيل الدخول وإنشاء حساب جديد</p>
+    <div class="tabs"><button id="loginTab" class="active">تسجيل الدخول</button><button id="registerTab">حساب جديد</button></div>
+    <form id="authForm">
+      <div class="field"><label>البريد الإلكتروني</label><input id="email" type="email" required autocomplete="email"></div>
+      <div class="field"><label>كلمة المرور</label><input id="password" type="password" required minlength="6" autocomplete="current-password"></div>
+      <div id="nameField" class="field hidden"><label>اسم المستخدم</label><input id="name" maxlength="40"></div>
+      <div id="authExtra" class="muted"></div>
+      <button class="primary" id="authBtn" type="submit">تسجيل الدخول</button>
+      <div id="authError" class="error hidden"></div>
+    </form>
+  </div>
+</section>
+
+<section id="app" class="hidden">
+  <header class="topbar">
+    <div class="brand">💬 الدردشة العربية</div>
+    <div class="top-actions">
+      <button class="icon-btn" id="profileBtn">👤</button>
+      <button class="icon-btn" id="privateBtn">💬</button>
+      <button class="icon-btn" id="logoutBtn">⎋</button>
+    </div>
+  </header>
+  <div class="banner">أهلاً بك في <b>الدردشة العربية</b></div>
+  <div class="main">
+    <aside class="sidebar">
+      <div class="side-head"><span>الأعضاء</span><span class="online" id="onlineCount">0 متصل</span></div>
+      <div id="members" class="members"></div>
+    </aside>
+    <section class="chat">
+      <div class="chat-head"><b>الغرفة العامة</b><span id="meLabel" class="muted"></span></div>
+      <div id="messages" class="messages"></div>
+      <form id="composer" class="composer">
+        <input id="messageInput" maxlength="1000" placeholder="اكتب رسالتك..." autocomplete="off">
+        <button class="send" type="submit">➤</button>
+      </form>
+    </section>
+  </div>
+  <nav class="bottom">
+    <button id="mobileMembers">👥<br>الأعضاء</button><button id="mobileProfile">👤<br>حسابي</button><button id="mobilePrivate">💬<br>الخاص</button><button id="mobileLogout">⎋<br>خروج</button>
+  </nav>
+</section>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><h3>ملفي الشخصي</h3><button class="close" onclick="closeModal('profileModal')">×</button></div>
+    <div class="profile-cover"></div>
+    <div class="profile-main">
+      <img id="profileAvatar" class="avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+      <h3 id="profileName">—</h3>
+      <div><span class="badge" id="profileRank">الرتبة: 1</span><span class="badge" id="profilePoints">النقاط: 0</span></div>
+    </div>
+    <div class="field"><label>اسم العرض</label><input id="editName" maxlength="40"></div>
+    <div class="field"><label>رابط الصورة</label><input id="editAvatar" placeholder="https://..."></div>
+    <div class="field"><label>معلوماتي</label><textarea id="editInfo" maxlength="500"></textarea></div>
+    <button class="primary" id="saveProfile">حفظ التغييرات</button>
+  </div>
+</div>
+
+<div id="memberModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="memberTitle">العضو</h3><button class="close" onclick="closeModal('memberModal')">×</button></div>
+    <div class="profile-main"><img id="memberAvatar" class="avatar"><div id="memberBadges"></div><p id="memberInfo" class="muted"></p></div>
+    <div class="actions"><button id="privateMemberBtn">💬 رسالة خاصة</button><button id="giftMemberBtn">🎁 إهداء نقطة</button><button id="reportMemberBtn">🚩 بلاغ</button><button onclick="closeModal('memberModal')">إغلاق</button></div>
+  </div>
+</div>
+
+<div id="privateModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head"><h3>المحادثات الخاصة</h3><button class="close" onclick="closeModal('privateModal')">×</button></div>
+    <div id="privateList"></div>
+    <div id="privateChatBox" class="hidden">
+      <hr><b id="privateTitle"></b>
+      <div id="privateMessages" class="messages" style="height:300px;margin:8px 0;border-radius:10px"></div>
+      <form id="privateComposer" class="composer"><input id="privateInput" maxlength="1000" placeholder="اكتب رسالة خاصة..."><button class="send">➤</button></form>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden">💬 وصلت رسالة خاصة جديدة!</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {getDatabase,ref,set,get,update,push,onValue,onChildAdded,onDisconnect,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import {firebaseConfig} from "./firebase-config.js";
+
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getDatabase(app);
+const DEFAULT_AVATAR="https://cdn-icons-png.flaticon.com/512/149/149071.png";
+let mode="login", currentUser=null, profile=null, membersCache={}, selectedMember=null, privateTarget=null, privateUnsubs=[];
+
+const $=id=>document.getElementById(id);
+function show(id){$(id).classList.remove("hidden")} function hide(id){$(id).classList.add("hidden")}
+window.closeModal=id=>hide(id);
+function errMsg(e){const m={ "auth/invalid-credential":"البريد أو كلمة المرور غير صحيحة.","auth/email-already-in-use":"البريد مستخدم بالفعل.","auth/weak-password":"كلمة المرور ضعيفة.","auth/invalid-email":"البريد الإلكتروني غير صالح.","auth/operation-not-allowed":"فعّل تسجيل الدخول بالبريد وكلمة المرور من Firebase."};return m[e.code]||e.message||"حدث خطأ."}
+function escapeHtml(s=""){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function convoKey(a,b){return [a,b].sort().join("_")}
+
+$("loginTab").onclick=()=>setMode("login"); $("registerTab").onclick=()=>setMode("register");
+function setMode(m){mode=m;$("loginTab").classList.toggle("active",m==="login");$("registerTab").classList.toggle("active",m==="register");$("nameField").classList.toggle("hidden",m!=="register");$("authBtn").textContent=m==="login"?"تسجيل الدخول":"إنشاء الحساب";$("password").autocomplete=m==="login"?"current-password":"new-password"}
+$("authForm").onsubmit=async e=>{e.preventDefault();hide("authError");try{const email=$("email").value.trim(),pass=$("password").value;if(mode==="login"){await signInWithEmailAndPassword(auth,email,pass)}else{const c=await createUserWithEmailAndPassword(auth,email,pass);await set(ref(db,"users/"+c.user.uid),{uid:c.user.uid,name:$("name").value.trim()||email.split("@")[0],email,avatar:DEFAULT_AVATAR,info:"أهلاً بك في ملفي الشخصي",points:0,rank:1,createdAt:serverTimestamp()})}}catch(e){$("authError").textContent=errMsg(e);show("authError")}};
+$("logoutBtn").onclick=()=>signOut(auth);$("mobileLogout").onclick=()=>signOut(auth);
+$("profileBtn").onclick=()=>openOwnProfile();$("mobileProfile").onclick=()=>openOwnProfile();
+$("privateBtn").onclick=()=>openPrivateList();$("mobilePrivate").onclick=()=>openPrivateList();
+$("mobileMembers").onclick=()=>document.querySelector(".sidebar").style.display="flex";
+
+async function openOwnProfile(){if(!profile)return; $("profileName").textContent=profile.name||"—";$("profileAvatar").src=profile.avatar||DEFAULT_AVATAR;$("profileRank").textContent="الرتبة: "+(profile.rank||1);$("profilePoints").textContent="النقاط: "+(profile.points||0);$("editName").value=profile.name||"";$("editAvatar").value=profile.avatar||"";$("editInfo").value=profile.info||"";show("profileModal")}
+$("saveProfile").onclick=async()=>{const name=$("editName").value.trim()||profile.name;const avatar=$("editAvatar").value.trim()||DEFAULT_AVATAR;const info=$("editInfo").value.trim();await update(ref(db,"users/"+currentUser.uid),{name,avatar,info});hide("profileModal")};
+
+onAuthStateChanged(auth,async u=>{currentUser=u;if(!u){hide("app");show("auth-screen");return}hide("auth-screen");show("app");await loadProfile();startPresence();listenMembers();listenMessages();listenPrivateNotifications()});
+async function loadProfile(){const s=await get(ref(db,"users/"+currentUser.uid));profile=s.val()||{uid:currentUser.uid,name:currentUser.email.split("@")[0],email:currentUser.email,avatar:DEFAULT_AVATAR,points:0,rank:1,info:""};if(!s.exists())await set(ref(db,"users/"+currentUser.uid),profile);$("meLabel").textContent=profile.name||currentUser.email}
+function startPresence(){const p=ref(db,"presence/"+currentUser.uid);set(p,{uid:currentUser.uid,name:profile.name||currentUser.email,online:true,lastSeen:serverTimestamp()});onDisconnect(p).set({uid:currentUser.uid,name:profile.name||currentUser.email,online:false,lastSeen:serverTimestamp()})}
+function listenMembers(){onValue(ref(db,"users"),snap=>{const v=snap.val()||{};membersCache=v;const presRef=ref(db,"presence");onValue(presRef,ps=>{const pres=ps.val()||{};const arr=Object.values(v).filter(x=>pres[x.uid]?.online);$("onlineCount").textContent=arr.length+" متصل";$("members").innerHTML=arr.map(x=>`<div class="member" data-uid="${x.uid}"><img class="avatar" src="${escapeHtml(x.avatar||DEFAULT_AVATAR)}"><div><div class="member-name">${escapeHtml(x.name||"عضو")}</div><div class="member-status">متصل الآن</div></div></div>`).join("");document.querySelectorAll(".member").forEach(el=>el.onclick=()=>openMember(el.dataset.uid))})})}
+function openMember(uid){selectedMember=membersCache[uid];if(!selectedMember)return;$("memberTitle").textContent=selectedMember.name||"عضو";$("memberAvatar").src=selectedMember.avatar||DEFAULT_AVATAR;$("memberInfo").textContent=selectedMember.info||"لا توجد معلومات."; $("memberBadges").innerHTML=`<span class="badge">الرتبة: ${selectedMember.rank||1}</span><span class="badge">النقاط: ${selectedMember.points||0}</span>`;show("memberModal")}
+$("privateMemberBtn").onclick=()=>{if(selectedMember){privateTarget=selectedMember;hide("memberModal");openPrivateChat(selectedMember.uid)}};
+$("giftMemberBtn").onclick=async()=>{if(!selectedMember)return;await update(ref(db,"users/"+selectedMember.uid),{points:(selectedMember.points||0)+1});alert("تم إهداء نقطة.");hide("memberModal")};
+$("reportMemberBtn").onclick=async()=>{if(!selectedMember)return;await push(ref(db,"reports"),{from:currentUser.uid,to:selectedMember.uid,text:"بلاغ من الملف الشخصي",createdAt:serverTimestamp()});alert("تم إرسال البلاغ للإدارة.");};
+
+function listenMessages(){onChildAdded(ref(db,"rooms/main/messages"),snap=>renderMessage(snap.key,snap.val()));}
+function renderMessage(id,m){const mine=m.uid===currentUser.uid, div=document.createElement("div");div.className="msg "+(mine?"mine ":"")+(m.type==="gift"?"gift ":"")+(m.type==="bot"?"bot ":"");div.dataset.id=id;div.innerHTML=`<div class="meta">${escapeHtml(m.name||"عضو")} • ${m.createdAt?new Date(m.createdAt).toLocaleTimeString("ar",{hour:"2-digit",minute:"2-digit"}):""}</div><div class="text">${escapeHtml(m.text||"")}</div>`;$("messages").appendChild(div);$("messages").scrollTop=$("messages").scrollHeight}
+$("composer").onsubmit=async e=>{e.preventDefault();const text=$("messageInput").value.trim();if(!text)return;await push(ref(db,"rooms/main/messages"),{uid:currentUser.uid,name:profile.name||currentUser.email,text,type:"normal",createdAt:serverTimestamp()});$("messageInput").value=""};
+
+async function openPrivateList(){show("privateModal");hide("privateChatBox");const users=membersCache;const others=Object.values(users).filter(x=>x.uid!==currentUser.uid);$("privateList").innerHTML=others.map(x=>`<div class="list-item" data-uid="${x.uid}">💬 ${escapeHtml(x.name||"عضو")}</div>`).join("");document.querySelectorAll("#privateList .list-item").forEach(el=>el.onclick=()=>openPrivateChat(el.dataset.uid))}
+function openPrivateChat(uid){const u=typeof uid==="string"?membersCache[uid]:uid;privateTarget=u||membersCache[uid];if(!privateTarget)return;show("privateModal");show("privateChatBox");$("privateTitle").textContent="محادثة مع "+privateTarget.name; $("privateMessages").innerHTML="";privateUnsubs.forEach(f=>f&&f());privateUnsubs=[];const key=convoKey(currentUser.uid,privateTarget.uid);const unsub=onValue(ref(db,"privateMessages/"+currentUser.uid+"/"+privateTarget.uid),snap=>{const vals=Object.values(snap.val()||{}).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));$("privateMessages").innerHTML=vals.map(m=>`<div class="msg ${m.from===currentUser.uid?"mine":""}"><div class="meta">${escapeHtml(m.from===currentUser.uid?profile.name:(privateTarget.name||"عضو"))}</div><div class="text">${escapeHtml(m.text)}</div></div>`).join("");$("privateMessages").scrollTop=$("privateMessages").scrollHeight});privateUnsubs.push(unsub)}
+$("privateComposer").onsubmit=async e=>{e.preventDefault();if(!privateTarget)return;const text=$("privateInput").value.trim();if(!text)return;const a=push(ref(db,"privateMessages/"+currentUser.uid+"/"+privateTarget.uid));const b=push(ref(db,"privateMessages/"+privateTarget.uid+"/"+currentUser.uid),a.key);const m={from:currentUser.uid,to:privateTarget.uid,text,createdAt:serverTimestamp()};await update(ref(db),{["privateMessages/"+currentUser.uid+"/"+privateTarget.uid+"/"+a.key]:m,["privateMessages/"+privateTarget.uid+"/"+currentUser.uid+"/"+a.key]:m});$("privateInput").value=""};
+function listenPrivateNotifications(){onChildAdded(ref(db,"privateMessages/"+currentUser.uid),snap=>{const conv=snap.val()||{};for(const k of Object.keys(conv)){const m=conv[k];if(m.to===currentUser.uid&&m.from!==currentUser.uid){show("toast");$("toast").textContent="💬 وصلتك رسالة خاصة!";setTimeout(()=>hide("toast"),3000);break}}})}
+</script>
+</body>
+</html>
